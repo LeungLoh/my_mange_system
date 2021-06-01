@@ -2,16 +2,43 @@
   <div class="login-wrap">
     <div class="ms-login">
       <div class="ms-title">后台管理系统</div>
-      <!-- <el-form :model="param" :rules="rule" ref="login">
-        <el-form-item v-model="param.username"></el-form-item>
-        <el-form-item v-model="param.password"></el-form-item>
-      </el-form>-->
+      <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+        <el-form-item prop="username">
+          <el-input v-model="param.username" placeholder="username">
+            <template #prepend>
+              <el-button icon="el-icon-user"></el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="param.password" placeholder="password">
+            <!-- <template #prepend>
+              <el-button icon="el-icon-user"></el-button>
+            </template>-->
+          </el-input>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      param: {
+        username: "admin",
+        password: "123456",
+      },
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+      },
+    };
+  },
+};
 </script>
 
 <style>
@@ -41,5 +68,9 @@ export default {};
   font-size: 20px;
   color: #fff;
   border-bottom: 1px solid #ddd;
+}
+
+.ms-content {
+  padding: 30px 30px;
 }
 </style>
