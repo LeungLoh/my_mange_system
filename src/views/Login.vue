@@ -11,12 +11,18 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="param.password" placeholder="password">
-            <!-- <template #prepend>
-              <el-button icon="el-icon-user"></el-button>
-            </template>-->
-          </el-input>
+          <el-input v-model="param.password" 
+                    placeholder="password"
+                    @keyup.enter="submitForm()"
+                    >
+            <template #prepend>
+              <el-button icon="el-icon-lock"></el-button>
+            </template>
+          </el-input>  
         </el-form-item>
+        <div class="login-btn">
+            <el-button type="primary" @click="submitForm()">登录</el-button>
+        </div>
       </el-form>
     </div>
   </div>
@@ -38,6 +44,20 @@ export default {
       },
     };
   },
+  methods:{
+    submitForm(){
+        this.$refs.login.validate(valid=>{
+            if(valid){
+                this.$message.success("登录成功");
+                localStorage.setItem("ms_username", this.param.username);
+                this.$router.push("/");
+            }else{
+                this.$message.error("请输入账号和密码");
+                return false;
+            }
+        })
+    }
+  }
 };
 </script>
 
@@ -72,5 +92,14 @@ export default {
 
 .ms-content {
   padding: 30px 30px;
+}
+
+.login-btn {
+    text-align: center;
+}
+.login-btn button {
+    width: 100%;
+    height: 36px;
+    margin-bottom: 10px;
 }
 </style>
