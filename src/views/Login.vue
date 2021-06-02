@@ -11,17 +11,14 @@
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="param.password" 
-                    placeholder="password"
-                    @keyup.enter="submitForm()"
-                    >
+          <el-input v-model="param.password" placeholder="password" @keyup.enter="submitForm()">
             <template #prepend>
               <el-button icon="el-icon-lock"></el-button>
             </template>
-          </el-input>  
+          </el-input>
         </el-form-item>
         <div class="login-btn">
-            <el-button type="primary" @click="submitForm()">登录</el-button>
+          <el-button type="primary" @click="submitForm()">登录</el-button>
         </div>
       </el-form>
     </div>
@@ -44,20 +41,23 @@ export default {
       },
     };
   },
-  methods:{
-    submitForm(){
-        this.$refs.login.validate(valid=>{
-            if(valid){
-                this.$message.success("登录成功");
-                localStorage.setItem("ms_username", this.param.username);
-                this.$router.push("/");
-            }else{
-                this.$message.error("请输入账号和密码");
-                return false;
-            }
-        })
-    }
-  }
+  created() {
+    this.$store.commit("clearTags");
+  },
+  methods: {
+    submitForm() {
+      this.$refs.login.validate((valid) => {
+        if (valid) {
+          this.$message.success("登录成功");
+          localStorage.setItem("ms_username", this.param.username);
+          this.$router.push("/");
+        } else {
+          this.$message.error("请输入账号和密码");
+          return false;
+        }
+      });
+    },
+  },
 };
 </script>
 
@@ -95,11 +95,11 @@ export default {
 }
 
 .login-btn {
-    text-align: center;
+  text-align: center;
 }
 .login-btn button {
-    width: 100%;
-    height: 36px;
-    margin-bottom: 10px;
+  width: 100%;
+  height: 36px;
+  margin-bottom: 10px;
 }
 </style>
