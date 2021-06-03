@@ -4,14 +4,7 @@
 
 <script>
 export default {
-  computed: {
-    tagsList() {
-      return this.$store.state.tagsList;
-    },
-    showTags() {
-      return this.tagsList.length > 0;
-    },
-  },
+  computed: {},
   methods: {
     clearTags(state) {
       state.tagsList = [];
