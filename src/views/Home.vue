@@ -5,11 +5,11 @@
     <div class="content-box" :class="{ 'content-collapse': collapse }">
       <v-tags />
       <div class="content">
-          <transition name="move" mode="out-in">
-            <keep-alive :include="tagsList">
-              <router-view />
-            </keep-alive>
-          </transition>
+        <transition name="move" mode="out-in">
+          <keep-alive>
+            <router-view />
+          </keep-alive>
+        </transition>
       </div>
     </div>
   </div>
@@ -26,9 +26,6 @@ export default {
     vTags,
   },
   computed: {
-    tagsList() {
-      return this.$store.state.tagsList.map((item) => item.name);
-    },
     collapse() {
       return this.$store.state.collapse;
     },
