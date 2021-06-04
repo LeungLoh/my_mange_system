@@ -18,6 +18,14 @@ const routes = [
                     title: "系统首页"
                 },
                 component: () => import("../views/Dashboard.vue")
+            },
+            {
+                path: "/table",
+                name: "table",
+                meta: {
+                    title: "基础表格"
+                },
+                component: () => import("../views/BaseTable.vue")
             }
         ]
     },
