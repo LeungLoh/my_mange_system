@@ -14,6 +14,17 @@ export default createStore({
             state
                 .tagsList
                 .push(data)
-        }
+        },
+        delTagsItem(state, data) {
+            state
+                .tagsList
+                .splice(data.index, 1);
+        },
+        clearTags(state) {
+            state.tagsList = []
+        },
+        closeTagsOther(state, data) {
+            state.tagsList = data;
+        },
     }
 })
