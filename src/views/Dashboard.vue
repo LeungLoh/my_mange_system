@@ -118,7 +118,7 @@ export default {
       statistics: [
         {
           name: "用户访问量",
-          num: 100,
+          num: 200,
           boxclass: "grid-content grid-con-1",
           icon: "el-icon-user-solid grid-con-icon",
         },
