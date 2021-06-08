@@ -7,3 +7,11 @@ export const fetchData = query => {
         params: query
     });
 };
+
+export const getuserlist = query => {
+    return request({
+        url: 'http://localhost:8000/api/v1/user/list',
+        method: 'get',
+        params: query
+    });
+}

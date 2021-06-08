@@ -10,19 +10,20 @@
     <div class="container">
       <div class="handle-box">
         <el-button type="primary" icon="el-icon-delete" class="handle-del mr10">批量删除</el-button>
-        <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-          <el-option key="1" label="广东省" value="广东省"></el-option>
-          <el-option key="2" label="湖南省" value="湖南省"></el-option>
+        <el-select v-model="query.roleid" placeholder="角色" class="handle-select mr10">
+          <el-option key="1" label="全部" value="0"></el-option>
+          <el-option key="2" label="管理员" value="1"></el-option>
+          <el-option key="3" label="普通用户" value="2"></el-option>
         </el-select>
-        <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+        <el-input v-model="query.username" placeholder="用户名" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-search">搜索</el-button>
       </div>
       <el-table :data="tableData" border class="table" ref="multipleTable">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="name" label="用户名" align="center"></el-table-column>
-        <el-table-column prop="money" label="账户余额" align="center"></el-table-column>
-        <el-table-column label="头像(查看大图)" align="center">
+        <el-table-column prop="userid" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="username" label="用户名" align="center"></el-table-column>
+        <el-table-column prop="role" label="角色" align="center"></el-table-column>
+        <!-- <el-table-column label="头像(查看大图)" align="center">
           <template #default="scope">
             <el-image
               class="table-td-thumb"
@@ -39,7 +40,7 @@
             >{{ scope.row.state }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="注册时间" align="center"></el-table-column>
+        <el-table-column prop="date" label="注册时间" align="center"></el-table-column>-->
         <el-table-column label="操作" align="center">
           <template #default>
             <el-button type="text" icon="el-icon-edit">编辑</el-button>
@@ -70,16 +71,15 @@
 </template>
 
 <script>
-import { fetchData } from "../api/index";
+import { getuserlist } from "../api/index";
 export default {
   name: "basetable",
   data() {
     return {
       query: {
-        address: "",
-        name: "",
-        pageIndex: 1,
-        pageSize: 10,
+        username: "",
+        offset: 0,
+        limit: 2,
       },
       tableData: [],
       pageTotal: 0,
@@ -91,10 +91,11 @@ export default {
   },
   methods: {
     getData() {
-      fetchData(this.query).then((res) => {
-        console.log(res);
-        this.tableData = res.list;
-        this.pageTotal = res.pageTotal || 50;
+      getuserlist(this.query).then((res) => {
+        this.tableData = res.data;
+        for (let v of this.tableData) {
+          v["role"] = v["roleid"] == 1 ? "管理员" : "普通用户";
+        }
       });
     },
   },
