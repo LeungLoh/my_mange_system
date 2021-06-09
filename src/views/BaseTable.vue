@@ -115,14 +115,11 @@ export default {
     },
     // 分页导航
     handlePageChange(val) {
-      console.log("handlePageChange");
-      console.log(val);
       //   this.$set(this.query, "offset", val);
       this.query.offset = val;
       this.getData();
     },
     handleSizeChange(val) {
-      console.log("handleSizeChange");
       this.query.limit = val;
       this.getData();
     },
