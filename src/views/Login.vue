@@ -26,12 +26,13 @@
 </template>
 
 <script>
+import { login } from "../api/index";
 export default {
   data() {
     return {
       param: {
-        username: "admin",
-        password: "123456",
+        username: "",
+        password: "",
       },
       rules: {
         username: [
@@ -39,6 +40,7 @@ export default {
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
+      loginvalid: -1,
     };
   },
   created() {
@@ -46,14 +48,15 @@ export default {
   },
   methods: {
     submitForm() {
-      this.$refs.login.validate((valid) => {
-        if (valid) {
+      login(this.param).then((res) => {
+        console.log(res);
+        if (res.status == 0) {
           this.$message.success("登录成功");
           localStorage.setItem("ms_username", this.param.username);
+          localStorage.setItem("token", res.data.token);
           this.$router.push("/");
         } else {
-          this.$message.error("请输入账号和密码");
-          return false;
+          this.$message.error("用户名或密码错误");
         }
       });
     },

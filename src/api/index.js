@@ -15,3 +15,18 @@ export const getuserlist = query => {
         params: query
     });
 }
+export const login = user => {
+    return request({
+        url: 'http://localhost:8000/api/v1/user/login',
+        method: 'post',
+        params: user
+    });
+}
+
+export const userinfo = username => {
+    return request({
+        url: 'http://localhost:8000/api/v1/user/info',
+        method: 'get',
+        params: username
+    });
+}

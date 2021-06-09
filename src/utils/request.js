@@ -9,6 +9,13 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config => {
+        let token = localStorage.getItem("token")
+        console.log(token)
+        if (token != null) {
+            config.headers['token'] = token
+        } else {
+            router.push('/login')
+        }
         return config;
     },
     error => {

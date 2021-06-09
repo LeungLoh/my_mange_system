@@ -111,10 +111,15 @@
 <script>
 import * as echarts from "echarts";
 import { onMounted, onUnmounted } from "vue";
+import { userinfo } from "../api/index";
 export default {
   data() {
     return {
       name: localStorage.getItem("ms_username"),
+      roleid: 0,
+      param: {
+        username: localStorage.getItem("ms_username"),
+      },
       statistics: [
         {
           name: "用户访问量",
@@ -147,7 +152,7 @@ export default {
   },
   computed: {
     role() {
-      return this.name == "admin" ? "超级管理员" : "普通用户";
+      return this.roleid == 1 ? "管理员" : "普通用户";
     },
     span() {
       return Math.floor(24 / this.statistics.length);
@@ -441,6 +446,23 @@ export default {
       chart4.setOption(option4); //设置option
     }
     return { initChart };
+  },
+
+  created() {
+    this.getuserinfo();
+  },
+  methods: {
+    getuserinfo() {
+      userinfo(this.param).then((res) => {
+        console.log(res);
+        if (res.status == -1) {
+          this.$message.error("获取信息失败");
+        } else {
+          this.name = res.data.username;
+          this.roleid = res.data.roleid;
+        }
+      });
+    },
   },
 };
 </script>
