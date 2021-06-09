@@ -16,7 +16,7 @@
           <el-option key="3" label="普通用户" value="2"></el-option>
         </el-select>
         <el-input v-model="query.username" placeholder="用户名" class="handle-input mr10"></el-input>
-        <el-button type="primary" icon="el-icon-search">搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
       </div>
       <el-table :data="tableData" border class="table" ref="multipleTable">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -48,25 +48,36 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!-- 编辑弹出框 -->
-      <el-dialog title="编辑" v-model="editVisible" width="30%">
-        <el-form ref="form" :model="form" label-width="70px">
-          <el-form-item label="用户名">
-            <el-input v-model="form.name"></el-input>
-          </el-form-item>
-          <el-form-item label="地址">
-            <el-input v-model="form.address"></el-input>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button>取消</el-button>
-            <el-button type="primary">确 定</el-button>
-          </span>
-        </template>
-      </el-dialog>
+      <div class="pagination">
+        <el-pagination
+          background
+          layout="sizes,prev, pager, next,total"
+          :current-page="query.offset"
+          :page-size="query.limit"
+          :page-sizes="[1, 2, 3, 4]"
+          :total="total"
+          @current-change="handlePageChange"
+          @size-change="handleSizeChange"
+        ></el-pagination>
+      </div>
     </div>
+    <!-- 编辑弹出框 -->
+    <el-dialog title="编辑" v-model="editVisible" width="30%">
+      <el-form ref="form" :model="form" label-width="70px">
+        <el-form-item label="用户名">
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="地址">
+          <el-input v-model="form.address"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button>取消</el-button>
+          <el-button type="primary">确 定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -78,11 +89,11 @@ export default {
     return {
       query: {
         username: "",
-        offset: 0,
-        limit: 2,
+        offset: 1,
+        limit: 1,
       },
       tableData: [],
-      pageTotal: 0,
+      total: 0,
       editVisible: false,
     };
   },
@@ -93,10 +104,27 @@ export default {
     getData() {
       getuserlist(this.query).then((res) => {
         this.tableData = res.data;
+        this.total = res.total;
         for (let v of this.tableData) {
           v["role"] = v["roleid"] == 1 ? "管理员" : "普通用户";
         }
       });
+    },
+    handleSearch() {
+      this.getData();
+    },
+    // 分页导航
+    handlePageChange(val) {
+      console.log("handlePageChange");
+      console.log(val);
+      //   this.$set(this.query, "offset", val);
+      this.query.offset = val;
+      this.getData();
+    },
+    handleSizeChange(val) {
+      console.log("handleSizeChange");
+      this.query.limit = val;
+      this.getData();
     },
   },
 };
