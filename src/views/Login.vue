@@ -54,10 +54,10 @@ export default {
   methods: {
     submitForm() {
       login(this.param).then((res) => {
-        if (res.status == 0) {
+        if (res.status == 200) {
           this.$message.success("登录成功");
           localStorage.setItem("ms_username", this.param.username);
-          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("token", res.token);
           this.$router.push("/");
         } else {
           this.$message.error("用户名或密码错误");

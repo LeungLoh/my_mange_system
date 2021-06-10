@@ -456,10 +456,8 @@ export default {
   methods: {
     getuserinfo() {
       userinfo(this.param).then((res) => {
-        console.log(res);
-        if (res.status == -1) {
+        if (res.status != 200) {
           this.$message.error("获取信息失败");
-          this.$router.push("/login");
         } else {
           this.name = res.data.username;
           this.roleid = res.data.roleid;
