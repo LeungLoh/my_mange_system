@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import router from '../router'
 const service = axios.create({
     // process.env.NODE_ENV === 'development' 来判断是否开发环境
     // easy-mock服务挂了，暂时不使用了
@@ -29,6 +29,7 @@ service.interceptors.response.use(
             return response.data;
         } else {
             Promise.reject();
+            router.push('/login')
         }
     },
     error => {
