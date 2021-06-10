@@ -103,8 +103,8 @@ export default {
   methods: {
     getData() {
       getuserlist(this.query).then((res) => {
-        this.tableData = res.data;
-        this.total = res.total;
+        this.tableData = res.data.users;
+        this.total = res.data.total;
         for (let v of this.tableData) {
           v["role"] = v["roleid"] == 1 ? "管理员" : "普通用户";
         }
