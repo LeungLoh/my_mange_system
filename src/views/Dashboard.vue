@@ -12,11 +12,11 @@
           </div>
           <div class="user-info-list">
             上次登录时间：
-            <span>2021.06.03</span>
+            <span>{{lastlogintime}}</span>
           </div>
           <div class="user-info-list">
             上次登录地点：
-            <span>北京</span>
+            <span>{{city}}</span>
           </div>
         </el-card>
         <el-card shadow="hover" style="height:252px;">
@@ -117,6 +117,8 @@ export default {
     return {
       name: localStorage.getItem("ms_username"),
       roleid: 0,
+      lastlogintime: "unknow",
+      city: "unknow",
       param: {
         username: localStorage.getItem("ms_username"),
       },
@@ -457,9 +459,12 @@ export default {
         console.log(res);
         if (res.status == -1) {
           this.$message.error("获取信息失败");
+          this.$router.push("/login");
         } else {
           this.name = res.data.username;
           this.roleid = res.data.roleid;
+          this.lastlogintime = res.data.lastlogintime;
+          this.city = res.data.city;
         }
       });
     },

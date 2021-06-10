@@ -25,6 +25,7 @@
   </div>
 </template>
 
+
 <script>
 import { login } from "../api/index";
 export default {
@@ -33,6 +34,7 @@ export default {
       param: {
         username: "",
         password: "",
+        city: "",
       },
       rules: {
         username: [
@@ -46,10 +48,12 @@ export default {
   created() {
     this.$store.commit("clearTags");
   },
+  mounted() {
+    this.localstation();
+  },
   methods: {
     submitForm() {
       login(this.param).then((res) => {
-        console.log(res);
         if (res.status == 0) {
           this.$message.success("登录成功");
           localStorage.setItem("ms_username", this.param.username);
@@ -59,6 +63,13 @@ export default {
           this.$message.error("用户名或密码错误");
         }
       });
+    },
+    localstation() {
+      let clientip = returnCitySN["cip"];
+      let city = returnCitySN["cname"];
+      this.param.city = city;
+      localStorage.setItem("clientip", clientip);
+      localStorage.setItem("city", city);
     },
   },
 };
