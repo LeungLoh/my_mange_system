@@ -55,7 +55,7 @@
         <el-table-column prop="date" label="注册时间" align="center"></el-table-column>-->
         <el-table-column label="操作" align="center">
           <template #default="scope">
-            <el-button type="text" icon="el-icon-edit">编辑</el-button>
+            <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button
               type="text"
               icon="el-icon-delete"
@@ -82,16 +82,16 @@
     <el-dialog title="编辑" v-model="editVisible" width="30%">
       <el-form ref="form" :model="form" label-width="70px">
         <el-form-item label="用户名">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="updateparams.username"></el-input>
         </el-form-item>
         <el-form-item label="密码">
-          <el-input v-model="form.address"></el-input>
+          <el-input v-model="updateparams.password"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button>取消</el-button>
-          <el-button type="primary">确 定</el-button>
+          <el-button @click="handleCancel()">取消</el-button>
+          <el-button type="primary" @click="handleUpdate()">确 定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { getuserlist, deluserlist } from "../api/index";
+import { getuserlist, deluserlist, updateuserlist } from "../api/index";
 export default {
   name: "basetable",
   data() {
@@ -117,6 +117,11 @@ export default {
       tableData: [],
       total: 0,
       editVisible: false,
+      updateparams: {
+        userid: "",
+        username: "",
+        password: "",
+      },
     };
   },
   created() {
@@ -186,6 +191,33 @@ export default {
           this.$message.success(res.msg);
           this.getData();
         });
+      });
+    },
+
+    handleEdit(row) {
+      this.updateparams = {
+        userid: "",
+        username: "",
+        password: "",
+      };
+      this.editVisible = true;
+      console.log(row);
+      this.updateparams.userid = row.userid;
+    },
+    handleCancel() {
+      this.editVisible = false;
+    },
+    handleUpdate() {
+      updateuserlist(this.updateparams).then((res) => {
+        console.log(res);
+        console.log(this.updateparams);
+        if (res.status != 200) {
+          this.$message.error(res.error);
+          return;
+        }
+        this.$message.success(res.msg);
+        this.getData();
+        this.editVisible = false;
       });
     },
   },

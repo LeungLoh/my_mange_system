@@ -29,8 +29,10 @@
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>项目仓库</el-dropdown-item>
-              <el-dropdown-item>退出登录</el-dropdown-item>
+              <a href="https://github.com/LeungLoh" target="_blank">
+                <el-dropdown-item>项目仓库</el-dropdown-item>
+              </a>
+              <el-dropdown-item divided @click="logOut()">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -60,6 +62,10 @@ export default {
   methods: {
     collapseChage() {
       this.$store.commit("hadndleCollapse", !this.collapse);
+    },
+    logOut() {
+      localStorage.clear();
+      this.$store.clear();
     },
   },
 };

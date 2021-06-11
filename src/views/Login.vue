@@ -56,8 +56,10 @@ export default {
       login(this.param).then((res) => {
         if (res.status == 200) {
           this.$message.success("登录成功");
-          localStorage.setItem("ms_username", this.param.username);
+          localStorage.setItem("ms_username", res.data.username);
           localStorage.setItem("token", res.token);
+          localStorage.setItem("userid", res.data.userid);
+          localStorage.setItem("roleid", res.data.roleid);
           this.$router.push("/");
         } else {
           this.$message.error(res.error);

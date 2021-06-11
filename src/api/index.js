@@ -17,6 +17,13 @@ export const login = params => {
     });
 }
 
+export const logout = () => {
+    return request({
+        url: 'http://localhost:8000/api/v1/user/login',
+        method: 'delete',
+    });
+}
+
 export const userinfo = () => {
     return request({
         url: 'http://localhost:8000/api/v1/user/info',
@@ -35,6 +42,14 @@ export const deluserlist = params => {
     return request({
         url: 'http://localhost:8000/api/v1/user/list',
         method: 'delete',
+        params: params
+    });
+}
+
+export const updateuserlist = params => {
+    return request({
+        url: 'http://localhost:8000/api/v1/user/list',
+        method: 'put',
         params: params
     });
 }
