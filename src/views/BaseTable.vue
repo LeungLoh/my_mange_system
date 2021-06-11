@@ -71,7 +71,7 @@
           layout="sizes,prev, pager, next,total"
           :current-page="query.offset"
           :page-size="query.limit"
-          :page-sizes="[1, 2, 3, 4]"
+          :page-sizes="[5,10]"
           :total="total"
           @current-change="handlePageChange"
           @size-change="handleSizeChange"
@@ -107,21 +107,20 @@ export default {
       query: {
         username: "",
         offset: 1,
-        limit: 1,
+        limit: 5,
       },
       deleteparams: {
         userid: [],
         roleid: [],
       },
-      indexs: [],
-      tableData: [],
-      total: 0,
-      editVisible: false,
       updateparams: {
         userid: "",
         username: "",
         password: "",
       },
+      tableData: [],
+      total: 0,
+      editVisible: false,
     };
   },
   created() {

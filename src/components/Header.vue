@@ -32,29 +32,61 @@
               <a href="https://github.com/LeungLoh" target="_blank">
                 <el-dropdown-item>项目仓库</el-dropdown-item>
               </a>
+              <el-dropdown-item divided @click="updatePassword()">修改密码</el-dropdown-item>
               <el-dropdown-item divided @click="logOut()">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </div>
     </div>
+    <!-- 编辑弹出框 -->
+    <el-dialog title="修改密码" v-model="editVisible" width="40%">
+      <el-form ref="form" :model="form" label-width="100px">
+        <el-form-item label="用户名">
+          <el-input v-model="username" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="旧密码">
+          <el-input v-model="oldpassword" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码">
+          <el-input v-model="newpassowrd1" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="再输入一次">
+          <el-input v-model="newpassword2" type="password"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCancel()">取消</el-button>
+          <el-button type="primary" @click="handleDetermine()">确 定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 
 <script>
-import { logout } from "../api/index";
+import { logout, changepassword } from "../api/index";
 export default {
   data() {
     return {
       name: "admin",
       message: 2,
+      editVisible: false,
+      oldpassword: "",
+      newpassowrd1: "",
+      newpassword2: "",
     };
   },
   computed: {
     username() {
       let username = localStorage.getItem("ms_username");
       return username ? username : this.name;
+    },
+    userid() {
+      let userid = localStorage.getItem("userid");
+      return userid ? userid : 0;
     },
     collapse() {
       return this.$store.state.collapse;
@@ -77,6 +109,31 @@ export default {
     },
     clearCookie(name) {
       document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    },
+    updatePassword() {
+      this.editVisible = true;
+    },
+    handleCancel() {
+      this.editVisible = false;
+    },
+    handleDetermine() {
+      if (this.newpassowrd1 != this.newpassword2) {
+        this.$message.error("2次密码输入不一致");
+        return;
+      }
+      let params = {
+        userid: this.userid,
+        oldpassword: this.oldpassword,
+        newpassword: this.newpassowrd1,
+      };
+      changepassword(params).then((res) => {
+        if (res.status != 200) {
+          this.$message.error(res.error);
+          return;
+        }
+        this.$message.success(res.msg);
+        this.editVisible = false;
+      });
     },
   },
 };

@@ -31,6 +31,14 @@ export const userinfo = () => {
     });
 }
 
+export const changepassword = (params) => {
+    return request({
+        url: 'http://localhost:8000/api/v1/user/info',
+        method: 'put',
+        params: params
+    });
+}
+
 export const getuserlist = params => {
     return request({
         url: 'http://localhost:8000/api/v1/user/list',
