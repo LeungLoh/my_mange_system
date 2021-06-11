@@ -43,6 +43,7 @@
 
 
 <script>
+import { logout } from "../api/index";
 export default {
   data() {
     return {
@@ -65,7 +66,17 @@ export default {
     },
     logOut() {
       localStorage.clear();
-      this.$store.clear();
+      this.clearCookie("gin-session");
+      this.isRouterAlive = false;
+      this.$nextTick(function () {
+        this.isRouterAlive = true;
+      });
+      logout().then((res) => {
+        console.log(res);
+      });
+    },
+    clearCookie(name) {
+      document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     },
   },
 };
