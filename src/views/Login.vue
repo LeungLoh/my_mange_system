@@ -60,7 +60,7 @@ export default {
           localStorage.setItem("token", res.token);
           this.$router.push("/");
         } else {
-          this.$message.error("用户名或密码错误");
+          this.$message.error(res.error);
         }
       });
     },

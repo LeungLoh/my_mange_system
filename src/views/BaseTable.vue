@@ -9,7 +9,12 @@
     </div>
     <div class="container">
       <div class="handle-box">
-        <el-button type="primary" icon="el-icon-delete" class="handle-del mr10">批量删除</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-delete"
+          class="handle-del mr10"
+          @click="handleDelete()"
+        >批量删除</el-button>
         <el-select v-model="query.roleid" placeholder="角色" class="handle-select mr10">
           <el-option key="1" label="全部" value="0"></el-option>
           <el-option key="2" label="管理员" value="1"></el-option>
@@ -18,9 +23,16 @@
         <el-input v-model="query.username" placeholder="用户名" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
       </div>
-      <el-table :data="tableData" border class="table" ref="multipleTable">
+      <el-table
+        :data="tableData"
+        border
+        class="table"
+        ref="multipleTable"
+        @select="selectCall"
+        @select-all="selectCall"
+      >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="userid" label="ID" width="55" align="center"></el-table-column>
+        <!-- <el-table-column prop="userid" label="ID" width="55" align="center"></el-table-column> -->
         <el-table-column prop="username" label="用户名" align="center"></el-table-column>
         <el-table-column prop="role" label="角色" align="center"></el-table-column>
         <!-- <el-table-column label="头像(查看大图)" align="center">
@@ -42,9 +54,14 @@
         </el-table-column>
         <el-table-column prop="date" label="注册时间" align="center"></el-table-column>-->
         <el-table-column label="操作" align="center">
-          <template #default>
+          <template #default="scope">
             <el-button type="text" icon="el-icon-edit">编辑</el-button>
-            <el-button type="text" icon="el-icon-delete" style="color:red">删除</el-button>
+            <el-button
+              type="text"
+              icon="el-icon-delete"
+              style="color:red"
+              @click="handleSingleDelData(scope.row)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -67,7 +84,7 @@
         <el-form-item label="用户名">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item label="密码">
           <el-input v-model="form.address"></el-input>
         </el-form-item>
       </el-form>
@@ -82,7 +99,7 @@
 </template>
 
 <script>
-import { getuserlist } from "../api/index";
+import { getuserlist, deluserlist } from "../api/index";
 export default {
   name: "basetable",
   data() {
@@ -92,6 +109,11 @@ export default {
         offset: 1,
         limit: 1,
       },
+      deleteparams: {
+        userid: [],
+        roleid: [],
+      },
+      indexs: [],
       tableData: [],
       total: 0,
       editVisible: false,
@@ -103,6 +125,10 @@ export default {
   methods: {
     getData() {
       getuserlist(this.query).then((res) => {
+        if (res.status != 200) {
+          this.$message.error(res.error);
+          return;
+        }
         this.tableData = res.data.users;
         this.total = res.data.total;
         for (let v of this.tableData) {
@@ -122,6 +148,45 @@ export default {
     handleSizeChange(val) {
       this.query.limit = val;
       this.getData();
+    },
+
+    handleSingleDelData(row) {
+      this.delparamsclear();
+      this.deleteparams.userid.push(row.userid);
+      this.deleteparams.roleid.push(row.roleid);
+      this.handleDelete();
+    },
+    selectCall(rows) {
+      this.delparamsclear();
+      for (let row of rows) {
+        this.deleteparams.userid.push(row.userid);
+        this.deleteparams.roleid.push(row.roleid);
+      }
+    },
+    delparamsclear() {
+      this.deleteparams = {
+        userid: [],
+        roleid: [],
+      };
+    },
+    handleDelete() {
+      this.$confirm("确定要删除吗？", "提示", {
+        confirmButtomText: "确认",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let userid = this.deleteparams.userid.join(",");
+        let roleid = this.deleteparams.roleid.join(",");
+        let params = { userid: userid, roleid, roleid };
+        deluserlist(params).then((res) => {
+          if (res.status != 200) {
+            this.$message.error(res.error);
+            return;
+          }
+          this.$message.success(res.msg);
+          this.getData();
+        });
+      });
     },
   },
 };

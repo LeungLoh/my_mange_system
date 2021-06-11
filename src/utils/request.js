@@ -26,18 +26,12 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
     response => {
-        if (response.status === 200) {
-            if (response.data.token) {
-                localStorage.setItem("token", response.data.token)
-            }
-            return response.data;
-        } else {
-            router.push('/login')
-            Promise.reject();
+        if (response.data.token) {
+            localStorage.setItem("token", response.data.token)
         }
+        return response.data;
     },
     error => {
-        router.push('/login')
         console.log(error);
         return Promise.reject();
     }

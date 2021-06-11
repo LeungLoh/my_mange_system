@@ -457,7 +457,7 @@ export default {
     getuserinfo() {
       userinfo().then((res) => {
         if (res.status != 200) {
-          this.$message.error("获取信息失败");
+          this.$message.error(res.error);
         } else {
           this.name = res.data.username;
           this.roleid = res.data.roleid;

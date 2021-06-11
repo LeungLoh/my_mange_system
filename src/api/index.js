@@ -8,18 +8,12 @@ export const fetchData = query => {
     });
 };
 
-export const getuserlist = query => {
-    return request({
-        url: 'http://localhost:8000/api/v1/user/list',
-        method: 'get',
-        params: query
-    });
-}
-export const login = user => {
+
+export const login = params => {
     return request({
         url: 'http://localhost:8000/api/v1/user/login',
         method: 'post',
-        params: user
+        params: params
     });
 }
 
@@ -27,5 +21,20 @@ export const userinfo = () => {
     return request({
         url: 'http://localhost:8000/api/v1/user/info',
         method: 'get',
+    });
+}
+
+export const getuserlist = params => {
+    return request({
+        url: 'http://localhost:8000/api/v1/user/list',
+        method: 'get',
+        params: params
+    });
+}
+export const deluserlist = params => {
+    return request({
+        url: 'http://localhost:8000/api/v1/user/list',
+        method: 'delete',
+        params: params
     });
 }
