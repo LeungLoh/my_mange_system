@@ -455,7 +455,7 @@ export default {
   },
   methods: {
     getuserinfo() {
-      userinfo(this.param).then((res) => {
+      userinfo().then((res) => {
         if (res.status != 200) {
           this.$message.error("获取信息失败");
         } else {

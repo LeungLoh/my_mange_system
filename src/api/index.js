@@ -23,10 +23,9 @@ export const login = user => {
     });
 }
 
-export const userinfo = username => {
+export const userinfo = () => {
     return request({
         url: 'http://localhost:8000/api/v1/user/info',
         method: 'get',
-        params: username
     });
 }
