@@ -25,16 +25,17 @@
               <span>语言详情</span>
             </div>
           </template>
-          Vue
-          <el-progress :percentage="71.3" color="#42b983"></el-progress>JavaScript
-          <el-progress :percentage="24.1" color="#f1e05a"></el-progress>CSS
-          <el-progress :percentage="13.7"></el-progress>HTML
-          <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
+          MemAvailable
+          <el-progress :percentage="Available" color="#42b983"></el-progress>MemFree
+          <el-progress :percentage="Free" color="#f1e05a"></el-progress>MemBuffers/Cache
+          <el-progress :percentage="Buffers"></el-progress>
+          <!-- <el-progress :percentage="13.7"></el-progress>HTML
+          <el-progress :percentage="5.9" color="#f56c6c"></el-progress>-->
         </el-card>
       </el-col>
       <el-col :span="16">
         <el-row :gutter="20" class="mgb20">
-          <template v-for="item in statistics" :key="item.name">
+          <template v-for="item in meminfo" :key="item.name">
             <el-col :span="span">
               <el-card shadow="hover" :body-style="{ padding: '0px' }">
                 <div :class="item.boxclass">
@@ -111,7 +112,7 @@
 <script>
 import * as echarts from "echarts";
 import { onMounted, onUnmounted } from "vue";
-import { userinfo } from "../api/index";
+import { userinfo, systeminfo } from "../api/index";
 export default {
   data() {
     return {
@@ -122,26 +123,29 @@ export default {
       param: {
         username: localStorage.getItem("ms_username"),
       },
-      statistics: [
+      meminfo: [
         {
-          name: "用户访问量",
-          num: 200,
+          name: "MemTotal",
+          num: 0,
           boxclass: "grid-content grid-con-1",
-          icon: "el-icon-user-solid grid-con-icon",
+          icon: "el-icon-success grid-con-icon",
         },
         {
-          name: "系统消息",
-          num: 200,
+          name: "MemAvailable",
+          num: 0,
           boxclass: "grid-content grid-con-2",
-          icon: "el-icon-message-solid grid-con-icon",
+          icon: "el-icon-success grid-con-icon",
         },
         {
-          name: "数量",
-          num: 300,
+          name: "Buffers/Cache",
+          num: 0,
           boxclass: "grid-content grid-con-3",
-          icon: "el-icon-s-goods grid-con-icon",
+          icon: "el-icon-success grid-con-icon",
         },
       ],
+      Available: 0,
+      Free: 0,
+      Buffers: 0,
       todoList: [
         { title: "今天要修复100个bug", status: false },
         { title: "今天要修复100个bug", status: false },
@@ -157,7 +161,7 @@ export default {
       return this.roleid == 1 ? "管理员" : "普通用户";
     },
     span() {
-      return Math.floor(24 / this.statistics.length);
+      return Math.floor(24 / this.meminfo.length);
     },
   },
   setup() {
@@ -452,6 +456,7 @@ export default {
 
   created() {
     this.getuserinfo();
+    this.getsysteminfo();
   },
   methods: {
     getuserinfo() {
@@ -463,6 +468,26 @@ export default {
           this.roleid = res.data.roleid;
           this.lastlogintime = res.data.lastlogintime;
           this.city = res.data.city;
+        }
+      });
+    },
+    getsysteminfo() {
+      systeminfo().then((res) => {
+        if (res.status != 200) {
+          this.$message.error(res.error);
+        } else {
+          this.meminfo[0].num = res.data.MemTotal;
+          this.meminfo[1].num = res.data.MemAvailable;
+          this.meminfo[2].num = res.data.Buffers + res.data.Cached;
+          this.Available = (
+            (res.data.MemAvailable / res.data.MemTotal) *
+            100
+          ).toFixed(2);
+          this.Free = ((res.data.MemFree / res.data.MemTotal) * 100).toFixed(2);
+          this.Buffers = (
+            ((res.data.Buffers + res.data.Cached) / res.data.MemTotal) *
+            100
+          ).toFixed(2);
         }
       });
     },

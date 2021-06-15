@@ -53,3 +53,10 @@ export const deluserlist = params => {
         params: params
     });
 }
+
+export const systeminfo = () => {
+    return request({
+        url: 'http://localhost:8000/api/v1/system/info',
+        method: 'get',
+    });
+}
