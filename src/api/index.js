@@ -53,11 +53,3 @@ export const deluserlist = params => {
         params: params
     });
 }
-
-export const updateuserlist = params => {
-    return request({
-        url: 'http://localhost:8000/api/v1/user/list',
-        method: 'put',
-        params: params
-    });
-}

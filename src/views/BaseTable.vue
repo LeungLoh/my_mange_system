@@ -32,34 +32,15 @@
         @select-all="selectCall"
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <!-- <el-table-column prop="userid" label="ID" width="55" align="center"></el-table-column> -->
         <el-table-column prop="username" label="用户名" align="center"></el-table-column>
         <el-table-column prop="role" label="角色" align="center"></el-table-column>
-        <!-- <el-table-column label="头像(查看大图)" align="center">
-          <template #default="scope">
-            <el-image
-              class="table-td-thumb"
-              :src="scope.row.thumb"
-              :preview-src-list="[scope.row.thumb]"
-            ></el-image>
-          </template>
-        </el-table-column>
-        <el-table-column prop="address" label="地址" align="center"></el-table-column>
-        <el-table-column label="状态" align="center">
-          <template #default="scope">
-            <el-tag
-              :type="scope.row.state === '成功'? 'success': scope.row.state === '失败'? 'danger': ''"
-            >{{ scope.row.state }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="date" label="注册时间" align="center"></el-table-column>-->
         <el-table-column label="操作" align="center">
           <template #default="scope">
-            <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button
               type="text"
               icon="el-icon-delete"
-              style="color:red"
+              :class="{'table-delete':!isdisablebutton}"
+              :disabled="isdisablebutton"
               @click="handleSingleDelData(scope.row)"
             >删除</el-button>
           </template>
@@ -78,28 +59,11 @@
         ></el-pagination>
       </div>
     </div>
-    <!-- 编辑弹出框 -->
-    <el-dialog title="编辑" v-model="editVisible" width="30%">
-      <el-form ref="form" :model="form" label-width="70px">
-        <el-form-item label="用户名">
-          <el-input v-model="updateparams.username"></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="updateparams.password"></el-input>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="handleCancel()">取消</el-button>
-          <el-button type="primary" @click="handleUpdate()">确 定</el-button>
-        </span>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getuserlist, deluserlist, updateuserlist } from "../api/index";
+import { getuserlist, deluserlist } from "../api/index";
 export default {
   name: "basetable",
   data() {
@@ -113,15 +77,15 @@ export default {
         userid: [],
         roleid: [],
       },
-      updateparams: {
-        userid: "",
-        username: "",
-        password: "",
-      },
       tableData: [],
       total: 0,
-      editVisible: false,
     };
+  },
+  computed: {
+    isdisablebutton() {
+      let roleid = localStorage.getItem("roleid");
+      return roleid == 1 ? false : true;
+    },
   },
   created() {
     this.getData();
@@ -145,7 +109,6 @@ export default {
     },
     // 分页导航
     handlePageChange(val) {
-      //   this.$set(this.query, "offset", val);
       this.query.offset = val;
       this.getData();
     },
@@ -192,33 +155,6 @@ export default {
         });
       });
     },
-
-    handleEdit(row) {
-      this.updateparams = {
-        userid: "",
-        username: "",
-        password: "",
-      };
-      this.editVisible = true;
-      console.log(row);
-      this.updateparams.userid = row.userid;
-    },
-    handleCancel() {
-      this.editVisible = false;
-    },
-    handleUpdate() {
-      updateuserlist(this.updateparams).then((res) => {
-        console.log(res);
-        console.log(this.updateparams);
-        if (res.status != 200) {
-          this.$message.error(res.error);
-          return;
-        }
-        this.$message.success(res.msg);
-        this.getData();
-        this.editVisible = false;
-      });
-    },
   },
 };
 </script>
@@ -242,5 +178,8 @@ export default {
   margin: auto;
   width: 40px;
   height: 40px;
+}
+.table-delete {
+  color: red;
 }
 </style>
