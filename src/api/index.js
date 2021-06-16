@@ -60,3 +60,35 @@ export const systeminfo = () => {
         method: 'get',
     });
 }
+
+export const gettodolist = () => {
+    return request({
+        url: 'http://localhost:8000/api/v1/todolist',
+        method: 'get',
+    });
+}
+
+
+export const inserttodolist = (params) => {
+    return request({
+        url: 'http://localhost:8000/api/v1/todolist',
+        method: 'post',
+        params: params
+    });
+}
+
+export const updatetodolist = (params) => {
+    return request({
+        url: 'http://localhost:8000/api/v1/todolist',
+        method: 'put',
+        params: params
+    });
+}
+
+export const deletetodolist = (params) => {
+    return request({
+        url: 'http://localhost:8000/api/v1/todolist',
+        method: 'delete',
+        params: params
+    });
+}

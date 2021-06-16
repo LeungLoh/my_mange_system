@@ -11,18 +11,18 @@
             </div>
           </div>
           <div class="user-info-list">
-            上次登录时间：
+            登录时间：
             <span>{{lastlogintime}}</span>
           </div>
           <div class="user-info-list">
-            上次登录地点：
+            登录地点：
             <span>{{city}}</span>
           </div>
         </el-card>
         <el-card shadow="hover" style="height:252px;">
           <template #header>
             <div class="clearfix">
-              <span>语言详情</span>
+              <span>内存使用情况</span>
             </div>
           </template>
           MemAvailable
@@ -53,21 +53,31 @@
           <template #header>
             <div class="clearfix">
               <span>待办事项</span>
-              <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
+              <el-button style="float: right; padding: 3px 0" type="text" @click="handleadd()">添加</el-button>
             </div>
           </template>
           <el-table :show-header="false" :data="todoList" style="width:100%;">
-            <el-table-column width="40">
-              <template #default="scope">
-                <el-checkbox v-model="scope.row.status"></el-checkbox>
-              </template>
-            </el-table-column>
-            <el-table-column>
+            <el-table-column min-width="80%">
               <template #default="scope">
                 <div
                   class="todo-item"
-                  :class="{'todo-item-del': scope.row.status,}"
-                >{{ scope.row.title }}</div>
+                  :class="{'todo-item-del': scope.row.Status}"
+                >{{ scope.row.Title }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column width="50">
+              <template #default="scope">
+                <el-button type="text" icon="el-icon-check" @click="UpdateTodoList(scope.row)"></el-button>
+              </template>
+            </el-table-column>
+            <el-table-column width="50">
+              <template #default="scope">
+                <el-button
+                  type="text"
+                  icon="el-icon-close"
+                  style="color:red"
+                  @click="DeleteTodoList(scope.row)"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -106,13 +116,35 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 编辑弹出框 -->
+    <el-dialog title="添加todo" v-model="editVisible" width="40%">
+      <el-form ref="form" :model="form" label-width="100px">
+        <el-form-item label="title">
+          <el-input v-model="insertparams.title"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCancel()">取消</el-button>
+          <el-button type="primary" @click="InsertTodoList()">确 定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
 import { onMounted, onUnmounted } from "vue";
-import { userinfo, systeminfo } from "../api/index";
+import {
+  userinfo,
+  systeminfo,
+  gettodolist,
+  inserttodolist,
+  updatetodolist,
+  deletetodolist,
+} from "../api/index";
 export default {
   data() {
     return {
@@ -146,14 +178,13 @@ export default {
       Available: 0,
       Free: 0,
       Buffers: 0,
-      todoList: [
-        { title: "今天要修复100个bug", status: false },
-        { title: "今天要修复100个bug", status: false },
-        { title: "今天要写100行代码加几个bug吧", status: false },
-        { title: "今天要修复100个bug", status: false },
-        { title: "今天要修复100个bug", status: true },
-        { title: "今天要写100行代码加几个bug吧", status: true },
-      ],
+      todoList: [],
+
+      //todolist
+      editVisible: false,
+      insertparams: {
+        title: "",
+      },
     };
   },
   computed: {
@@ -455,11 +486,12 @@ export default {
   },
 
   created() {
-    this.getuserinfo();
-    this.getsysteminfo();
+    this.GetUserInfo();
+    this.GetSystemInfo();
+    this.GetTodoList();
   },
   methods: {
-    getuserinfo() {
+    GetUserInfo() {
       userinfo().then((res) => {
         if (res.status != 200) {
           this.$message.error(res.error);
@@ -471,7 +503,7 @@ export default {
         }
       });
     },
-    getsysteminfo() {
+    GetSystemInfo() {
       systeminfo().then((res) => {
         if (res.status != 200) {
           this.$message.error(res.error);
@@ -489,6 +521,61 @@ export default {
             100
           ).toFixed(2);
         }
+      });
+    },
+    handleadd() {
+      this.editVisible = true;
+    },
+    handleCancel() {
+      this.editVisible = false;
+    },
+    GetTodoList() {
+      gettodolist().then((res) => {
+        if (res.status != 200) {
+          this.$message.error(res.error);
+        } else {
+          this.todoList = res.data.todolist;
+        }
+      });
+    },
+    InsertTodoList() {
+      inserttodolist(this.insertparams).then((res) => {
+        if (res.status != 200) {
+          this.$message.error(res.error);
+        } else {
+          this.$message.success(res.msg);
+        }
+        this.editVisible = false;
+        this.GetTodoList();
+      });
+    },
+
+    UpdateTodoList(row) {
+      let param = {
+        id: row.ID,
+        status: !row.status,
+      };
+      updatetodolist(param).then((res) => {
+        if (res.status != 200) {
+          this.$message.error(res.error);
+        } else {
+          this.$message.success(res.msg);
+        }
+        this.GetTodoList();
+      });
+    },
+
+    DeleteTodoList(row) {
+      let param = {
+        id: row.ID,
+      };
+      deletetodolist(param).then((res) => {
+        if (res.status != 200) {
+          this.$message.error(res.error);
+        } else {
+          this.$message.success(res.msg);
+        }
+        this.GetTodoList();
       });
     },
   },
