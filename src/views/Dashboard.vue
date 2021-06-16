@@ -553,7 +553,7 @@ export default {
     UpdateTodoList(row) {
       let param = {
         id: row.ID,
-        status: !row.status,
+        status: !row.Status,
       };
       updatetodolist(param).then((res) => {
         if (res.status != 200) {
