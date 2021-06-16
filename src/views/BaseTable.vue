@@ -144,7 +144,7 @@ export default {
       }).then(() => {
         let userid = this.deleteparams.userid.join(",");
         let roleid = this.deleteparams.roleid.join(",");
-        let params = { userid: userid, roleid, roleid };
+        let params = { userid: userid, roleid: roleid };
         deluserlist(params).then((res) => {
           if (res.status != 200) {
             this.$message.error(res.error);
