@@ -20,14 +20,34 @@
         <div class="login-btn">
           <el-button type="primary" @click="submitForm()">登录</el-button>
         </div>
+        <div class="login-btn">
+          <el-button type="primary" @click="Registered()">注册</el-button>
+        </div>
       </el-form>
     </div>
+    <!-- 编辑弹出框 -->
+    <el-dialog title="注册" v-model="editVisible" width="40%">
+      <el-form ref="form" :model="form" label-width="100px">
+        <el-form-item label="用户名">
+          <el-input v-model="registeredparam.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="registeredparam.password" type="password"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleCancel()">取消</el-button>
+          <el-button type="primary" @click="handleSure()">确 定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 
 <script>
-import { login } from "../api/index";
+import { login, registered } from "../api/index";
 export default {
   data() {
     return {
@@ -43,6 +63,11 @@ export default {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
       loginvalid: -1,
+      editVisible: false,
+      registeredparam: {
+        username: "",
+        password: "",
+      },
     };
   },
   created() {
@@ -72,6 +97,22 @@ export default {
       this.param.city = city;
       localStorage.setItem("clientip", clientip);
       localStorage.setItem("city", city);
+    },
+    Registered() {
+      this.editVisible = true;
+    },
+    handleCancel() {
+      this.editVisible = false;
+    },
+    handleSure() {
+      registered(this.registeredparam).then((res) => {
+        if (res.status == 200) {
+          this.$message.success(res.msg);
+        } else {
+          this.$message.error(res.error);
+        }
+        this.editVisible = false;
+      });
     },
   },
 };

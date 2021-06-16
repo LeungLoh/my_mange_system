@@ -1,12 +1,12 @@
 import request from '../utils/request';
 
-export const fetchData = query => {
+export const registered = params => {
     return request({
-        url: './table.json',
-        method: 'get',
-        params: query
+        url: 'http://localhost:8000/api/v1/user/registered',
+        method: 'post',
+        params: params
     });
-};
+}
 
 
 export const login = params => {
@@ -19,7 +19,7 @@ export const login = params => {
 
 export const logout = () => {
     return request({
-        url: 'http://localhost:8000/api/v1/user/login',
+        url: 'http://localhost:8000/api/v1/user/logout',
         method: 'delete',
     });
 }
