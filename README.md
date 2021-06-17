@@ -5,7 +5,6 @@
   <a href="https://github.com/ElemeFE/element">
     <img src="https://img.shields.io/badge/element--ui-1.0.2-brightgreen.svg" alt="element-ui">
   </a>
-  </a>
 
 ## 前言
 
